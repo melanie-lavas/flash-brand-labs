@@ -22,7 +22,7 @@ const Navigation = () => {
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-xl">P</span>
             </div>
-            <span className="text-xl font-bold text-foreground">Pulse<span className="gradient-text">Digital</span></span>
+            <span className="text-xl font-bold text-foreground">Pixel<span className="gradient-text">Création</span></span>
           </a>
 
           {/* Desktop Nav */}

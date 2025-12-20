@@ -33,7 +33,7 @@ const Hero = () => {
             className="inline-flex items-center gap-2 glass-card px-4 py-2 rounded-full mb-8"
           >
             <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-sm text-muted-foreground">Agence Marketing Digital</span>
+            <span className="text-sm text-muted-foreground">Pixel Création | Marketing Digital</span>
           </motion.div>
 
           {/* Main Heading */}

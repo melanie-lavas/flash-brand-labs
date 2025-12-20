@@ -72,7 +72,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Courriel</p>
-                  <p className="text-foreground font-medium">contact@pulsedigital.ca</p>
+                  <a href="mailto:melanielavas@outlook.com" className="text-foreground font-medium hover:text-primary transition-colors">melanielavas@outlook.com</a>
                 </div>
               </div>
 
@@ -82,7 +82,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Téléphone</p>
-                  <p className="text-foreground font-medium">(514) 555-0123</p>
+                  <a href="tel:8192937765" className="text-foreground font-medium hover:text-primary transition-colors">819-293-7765</a>
                 </div>
               </div>
 
