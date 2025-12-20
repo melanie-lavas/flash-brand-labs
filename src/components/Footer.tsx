@@ -15,7 +15,7 @@ const Footer = () => {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-lg">P</span>
             </div>
-            <span className="text-lg font-bold text-foreground">Pulse<span className="gradient-text">Digital</span></span>
+            <span className="text-lg font-bold text-foreground">Pixel<span className="gradient-text">Création</span></span>
           </div>
 
           {/* Links */}
@@ -28,7 +28,7 @@ const Footer = () => {
 
           {/* Copyright */}
           <p className="text-sm text-muted-foreground">
-            © 2024 PulseDigital. Tous droits réservés.
+            © 2025 Pixel Création. Tous droits réservés.
           </p>
         </motion.div>
       </div>
