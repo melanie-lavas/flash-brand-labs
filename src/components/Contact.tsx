@@ -91,9 +91,8 @@ const Contact = () => {
                   <MapPin className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Loc alisation</p>
-                  <p className="text-foreground font-medium">
-                </p>
+                  <p className="text-sm text-muted-foreground">Localisation</p>
+                  <p className="text-foreground font-medium">Bécancour, Trois-Rivières, Nicolet</p>
                 </div>
               </div>
             </div>
