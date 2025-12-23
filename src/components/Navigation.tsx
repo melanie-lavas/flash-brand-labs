@@ -3,9 +3,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+import logoPixelCreation from "@/assets/logo-pixel-creation.png";
+
 const navLinks = [
   { href: "#services", label: "Services" },
   { href: "#forfaits", label: "Forfaits" },
+  { href: "/contrats", label: "Contrats", isRoute: true },
   { href: "#faq", label: "FAQ" },
   { href: "#contact", label: "Contact" },
 ];
@@ -19,22 +22,29 @@ const Navigation = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <a href="#" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-xl">P</span>
-            </div>
-            <span className="text-xl font-bold text-foreground">Pixel<span className="gradient-text">Création</span></span>
+            <img src={logoPixelCreation} alt="Pixel Création Logo" className="w-12 h-12 object-contain" />
           </a>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-muted-foreground hover:text-foreground transition-colors font-medium"
-              >
-                {link.label}
-              </a>
+              link.isRoute ? (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="text-muted-foreground hover:text-foreground transition-colors font-medium"
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="text-muted-foreground hover:text-foreground transition-colors font-medium"
+                >
+                  {link.label}
+                </a>
+              )
             ))}
             <Button variant="hero" size="lg" asChild>
               <a href="#contact">Soumission gratuite</a>
