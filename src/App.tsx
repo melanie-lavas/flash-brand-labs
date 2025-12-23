@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ServiceProcedures from "./pages/ServiceProcedures";
 import ContractTemplates from "./pages/ContractTemplates";
+import ClientTracking from "./pages/ClientTracking";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/procedures" element={<ServiceProcedures />} />
             <Route path="/contrats" element={<ContractTemplates />} />
+            <Route path="/suivi-client" element={<ClientTracking />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
