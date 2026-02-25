@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 const plans = [
   {
     name: "Essentiel",
-    price: "497",
+    price: "297",
     description: "Parfait pour démarrer votre présence en ligne",
     features: [
       "Fiche Google Business optimisée",
@@ -18,7 +18,7 @@ const plans = [
   },
   {
     name: "Croissance",
-    price: "997",
+    price: "697",
     description: "L'offre complète pour développer votre entreprise",
     features: [
       "Tout du forfait Essentiel",
