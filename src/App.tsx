@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import ServiceProcedures from "./pages/ServiceProcedures";
 import ContractTemplates from "./pages/ContractTemplates";
 import ClientTracking from "./pages/ClientTracking";
+import SiteTransfer from "./pages/SiteTransfer";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
             <Route path="/procedures" element={<ServiceProcedures />} />
             <Route path="/contrats" element={<ContractTemplates />} />
             <Route path="/suivi-client" element={<ClientTracking />} />
+            <Route path="/transfert-site" element={<SiteTransfer />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
