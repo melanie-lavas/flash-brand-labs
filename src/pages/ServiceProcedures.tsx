@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet-async";
-import { Palette, Globe, MapPin, Star, Megaphone, Layout, CheckCircle, Printer } from "lucide-react";
+import { Palette, Globe, MapPin, Star, Megaphone, Layout, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import DashboardLayout from "@/components/DashboardLayout";
 
 const serviceProcedures = [
   {
@@ -98,149 +99,96 @@ const serviceProcedures = [
 ];
 
 const ServiceProcedures = () => {
-  const handlePrint = () => {
-    window.print();
-  };
+  const handlePrint = () => window.print();
 
   return (
-    <>
+    <DashboardLayout>
       <Helmet>
         <title>Fiches de Procédures | Pixel Création</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <div className="min-h-screen bg-background">
-        {/* Header - Hidden on print */}
-        <header className="print:hidden bg-card border-b border-border sticky top-0 z-50">
-          <div className="container px-4 py-4 flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold gradient-text">Fiches de Procédures</h1>
-              <p className="text-sm text-muted-foreground">Pixel Création - Processus standardisés</p>
-            </div>
-            <Button onClick={handlePrint} className="gap-2">
-              <Printer className="w-4 h-4" />
-              Imprimer tout
-            </Button>
+      <style>{`
+        @media print {
+          @page { size: A4; margin: 1cm; }
+          body { background: white !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .print-card { break-inside: avoid; page-break-inside: avoid; border: 2px solid #333 !important; background: white !important; margin-bottom: 20px; }
+          .print-card * { color: black !important; }
+          .print-hide { display: none !important; }
+        }
+      `}</style>
+
+      <div className="p-6">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8 print:hidden">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Fiches de Procédures</h1>
+            <p className="text-sm text-gray-500">Processus standardisés pour chaque service</p>
           </div>
-        </header>
+          <Button onClick={handlePrint} className="gap-2 bg-gray-900 text-white hover:bg-gray-800">
+            <Printer className="w-4 h-4" />
+            Imprimer tout
+          </Button>
+        </div>
 
-        {/* Print styles */}
-        <style>{`
-          @media print {
-            @page {
-              size: A4;
-              margin: 1cm;
-            }
-            body {
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
-              background: white !important;
-              color: black !important;
-            }
-            .print-card {
-              break-inside: avoid;
-              page-break-inside: avoid;
-              border: 2px solid #333 !important;
-              background: white !important;
-              margin-bottom: 20px;
-            }
-            .print-card * {
-              color: black !important;
-            }
-            .print-hide {
-              display: none !important;
-            }
-            .print-title {
-              font-size: 18px !important;
-              font-weight: bold !important;
-              border-bottom: 2px solid #333;
-              padding-bottom: 8px;
-              margin-bottom: 12px;
-            }
-          }
-        `}</style>
-
-        {/* Content */}
-        <main className="container px-4 py-8">
-          <div className="grid gap-8">
-            {serviceProcedures.map((service) => (
-              <div
-                key={service.title}
-                className="print-card bg-card border border-border rounded-lg p-6 shadow-lg"
-              >
-                {/* Service Header */}
-                <div className="flex items-center gap-3 mb-6 print-title">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center print:bg-gray-100">
-                    <service.icon className="w-6 h-6 text-primary print:text-gray-700" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-foreground">{service.title}</h2>
-                    <p className="text-sm text-muted-foreground">Procédure standardisée</p>
-                  </div>
+        {/* Cards */}
+        <div className="grid gap-6">
+          {serviceProcedures.map((service) => (
+            <div key={service.title} className="print-card bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                  <service.icon className="w-5 h-5 text-gray-700" />
                 </div>
-
-                <div className="grid lg:grid-cols-2 gap-6">
-                  {/* Steps */}
-                  <div>
-                    <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs text-primary print:bg-gray-200 print:text-gray-700">
-                        📋
-                      </span>
-                      Étapes du processus
-                    </h3>
-                    <div className="space-y-2">
-                      {service.steps.map((step, idx) => (
-                        <div key={idx} className="flex gap-3 text-sm">
-                          <div className="w-5 h-5 rounded-full bg-secondary flex items-center justify-center text-xs text-muted-foreground shrink-0 mt-0.5 print:bg-gray-200">
-                            {idx + 1}
-                          </div>
-                          <div>
-                            <span className="font-medium text-foreground">{step.step.replace(/^\d+\.\s*/, '')}</span>
-                            <p className="text-muted-foreground text-xs">{step.details}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Checklist */}
-                  <div>
-                    <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center text-xs text-accent print:bg-gray-200 print:text-gray-700">
-                        ✓
-                      </span>
-                      Checklist de validation
-                    </h3>
-                    <div className="space-y-2">
-                      {service.checklist.map((item, idx) => (
-                        <label key={idx} className="flex items-center gap-3 text-sm cursor-pointer group">
-                          <div className="w-5 h-5 rounded border-2 border-border flex items-center justify-center group-hover:border-primary transition-colors print:border-gray-400">
-                            {/* Empty checkbox for printing */}
-                          </div>
-                          <span className="text-foreground">{item}</span>
-                        </label>
-                      ))}
-                    </div>
-
-                    {/* Notes section */}
-                    <div className="mt-4 pt-4 border-t border-border">
-                      <h4 className="text-sm font-medium text-muted-foreground mb-2">Notes:</h4>
-                      <div className="h-16 border border-dashed border-border rounded-md print:border-gray-300"></div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Footer */}
-                <div className="mt-4 pt-4 border-t border-border flex justify-between items-center text-xs text-muted-foreground">
-                  <span>Pixel Création - melanielavas@outlook.com</span>
-                  <span>Date: ____/____/________</span>
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900">{service.title}</h2>
+                  <p className="text-xs text-gray-500">Procédure standardisée</p>
                 </div>
               </div>
-            ))}
-          </div>
-        </main>
+
+              <div className="grid lg:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="font-semibold text-gray-700 mb-3 text-sm">📋 Étapes du processus</h3>
+                  <div className="space-y-2">
+                    {service.steps.map((step, idx) => (
+                      <div key={idx} className="flex gap-3 text-sm">
+                        <div className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center text-xs text-gray-500 shrink-0 mt-0.5">
+                          {idx + 1}
+                        </div>
+                        <div>
+                          <span className="font-medium text-gray-800">{step.step.replace(/^\d+\.\s*/, '')}</span>
+                          <p className="text-gray-500 text-xs">{step.details}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-gray-700 mb-3 text-sm">✓ Checklist de validation</h3>
+                  <div className="space-y-2">
+                    {service.checklist.map((item, idx) => (
+                      <label key={idx} className="flex items-center gap-3 text-sm">
+                        <div className="w-5 h-5 rounded border-2 border-gray-300" />
+                        <span className="text-gray-700">{item}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <h4 className="text-sm font-medium text-gray-400 mb-2">Notes:</h4>
+                    <div className="h-16 border border-dashed border-gray-300 rounded-md"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-gray-200 flex justify-between items-center text-xs text-gray-400">
+                <span>Pixel Création - melanielavas@outlook.com</span>
+                <span>Date: ____/____/________</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-    </>
+    </DashboardLayout>
   );
 };
 
