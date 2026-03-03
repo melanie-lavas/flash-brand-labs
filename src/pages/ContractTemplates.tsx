@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FileText, Printer, Download, ArrowLeft, Palette, Globe, MapPin, Star, Megaphone, Layout } from "lucide-react";
+import { Printer, Palette, Globe, MapPin, Star, Megaphone, Layout } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import DashboardLayout from "@/components/DashboardLayout";
 
 const contractTemplates = [
   {
@@ -158,46 +158,35 @@ const ContractTemplates = () => {
     }
   };
 
-  const today = new Date().toLocaleDateString('fr-FR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  });
+  const today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header - Hidden on print */}
-      <div className="print:hidden bg-gradient-to-b from-secondary/30 to-background py-8">
-        <div className="container px-4">
-          <Link to="/">
-            <Button variant="ghost" className="mb-6">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Retour à l'accueil
-            </Button>
-          </Link>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-8"
-          >
-            <h1 className="text-3xl md:text-5xl font-bold mb-4">
-              Modèles de <span className="gradient-text">Contrats & Devis</span>
-            </h1>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-6">
-              Templates professionnels prêts à personnaliser et imprimer
-            </p>
-            <Button onClick={() => handlePrint()} size="lg" className="gap-2">
-              <Printer className="w-5 h-5" />
-              Imprimer tous les modèles
-            </Button>
-          </motion.div>
-        </div>
-      </div>
+    <DashboardLayout>
+      <style>{`
+        @media print {
+          @page { size: A4; margin: 1cm; }
+          body { background: white !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .print\\:hidden { display: none !important; }
+          .print\\:break-before-page { break-before: page; }
+          .print\\:break-before-page:first-child { break-before: auto; }
+        }
+      `}</style>
 
-      {/* Templates */}
-      <div className="container px-4 py-8 print:py-0">
-        <div className="space-y-8 print:space-y-0">
+      <div className="p-6">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8 print:hidden">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Contrats & Devis</h1>
+            <p className="text-sm text-gray-500">Templates professionnels prêts à personnaliser et imprimer</p>
+          </div>
+          <Button onClick={() => handlePrint()} className="gap-2 bg-gray-900 text-white hover:bg-gray-800">
+            <Printer className="w-5 h-5" />
+            Imprimer tout
+          </Button>
+        </div>
+
+        {/* Templates */}
+        <div className="space-y-6 print:space-y-0">
           {contractTemplates.map((template, index) => (
             <motion.div
               key={template.id}
@@ -206,26 +195,20 @@ const ContractTemplates = () => {
               transition={{ delay: index * 0.1 }}
               className={`print:break-before-page ${selectedTemplate && selectedTemplate !== template.id ? 'print:hidden' : ''}`}
             >
-              {/* Template Card */}
-              <div className="bg-card border border-border rounded-xl overflow-hidden print:rounded-none print:border-2 print:border-foreground">
+              <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm print:rounded-none print:border-2 print:border-gray-800">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-primary/10 to-accent/10 p-6 print:bg-transparent print:border-b-2 print:border-foreground">
+                <div className="bg-gray-50 p-6 print:bg-transparent print:border-b-2 print:border-gray-800">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center print:bg-transparent print:border print:border-foreground">
-                        <template.icon className="w-6 h-6 text-primary print:text-foreground" />
+                      <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center">
+                        <template.icon className="w-6 h-6 text-gray-700" />
                       </div>
                       <div>
-                        <h2 className="text-2xl font-bold text-foreground">{template.title}</h2>
-                        <p className="text-muted-foreground print:text-foreground">{template.subtitle}</p>
+                        <h2 className="text-2xl font-bold text-gray-900">{template.title}</h2>
+                        <p className="text-gray-500">{template.subtitle}</p>
                       </div>
                     </div>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => handlePrint(template.id)}
-                      className="print:hidden gap-2"
-                    >
+                    <Button variant="outline" size="sm" onClick={() => handlePrint(template.id)} className="print:hidden gap-2">
                       <Printer className="w-4 h-4" />
                       Imprimer
                     </Button>
@@ -234,78 +217,50 @@ const ContractTemplates = () => {
 
                 {/* Contract Body */}
                 <div className="p-6 space-y-6">
-                  {/* Company Info Section */}
-                  <div className="grid md:grid-cols-2 gap-6 print:gap-4">
+                  <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide print:text-foreground">
-                        Prestataire
-                      </h3>
-                      <div className="bg-secondary/30 p-4 rounded-lg print:bg-transparent print:border print:border-foreground print:rounded-none">
-                        <p className="font-semibold">VOTRE ENTREPRISE</p>
-                        <p className="text-sm text-muted-foreground print:text-foreground">Adresse: _________________________</p>
-                        <p className="text-sm text-muted-foreground print:text-foreground">SIRET: _________________________</p>
-                        <p className="text-sm text-muted-foreground print:text-foreground">Email: _________________________</p>
-                        <p className="text-sm text-muted-foreground print:text-foreground">Tél: _________________________</p>
+                      <h3 className="font-semibold text-sm text-gray-400 uppercase tracking-wide">Prestataire</h3>
+                      <div className="bg-gray-50 p-4 rounded-lg print:bg-transparent print:border print:border-gray-400">
+                        <p className="font-semibold text-gray-900">VOTRE ENTREPRISE</p>
+                        {["Adresse", "SIRET", "Email", "Tél"].map((f) => (
+                          <p key={f} className="text-sm text-gray-500">{f}: _________________________</p>
+                        ))}
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide print:text-foreground">
-                        Client
-                      </h3>
-                      <div className="bg-secondary/30 p-4 rounded-lg print:bg-transparent print:border print:border-foreground print:rounded-none">
-                        <p className="font-semibold">Nom / Société: _________________________</p>
-                        <p className="text-sm text-muted-foreground print:text-foreground">Adresse: _________________________</p>
-                        <p className="text-sm text-muted-foreground print:text-foreground">SIRET: _________________________</p>
-                        <p className="text-sm text-muted-foreground print:text-foreground">Email: _________________________</p>
-                        <p className="text-sm text-muted-foreground print:text-foreground">Tél: _________________________</p>
+                      <h3 className="font-semibold text-sm text-gray-400 uppercase tracking-wide">Client</h3>
+                      <div className="bg-gray-50 p-4 rounded-lg print:bg-transparent print:border print:border-gray-400">
+                        <p className="font-semibold text-gray-900">Nom / Société: _________________________</p>
+                        {["Adresse", "SIRET", "Email", "Tél"].map((f) => (
+                          <p key={f} className="text-sm text-gray-500">{f}: _________________________</p>
+                        ))}
                       </div>
                     </div>
                   </div>
 
-                  {/* Quote Number and Date */}
-                  <div className="flex justify-between items-center border-y border-border py-4 print:border-foreground">
-                    <div>
-                      <span className="text-sm text-muted-foreground print:text-foreground">N° Devis: </span>
-                      <span className="font-mono">DEV-_______-{template.id.toUpperCase().slice(0, 3)}</span>
-                    </div>
-                    <div>
-                      <span className="text-sm text-muted-foreground print:text-foreground">Date: </span>
-                      <span>{today}</span>
-                    </div>
-                    <div>
-                      <span className="text-sm text-muted-foreground print:text-foreground">Validité: </span>
-                      <span>30 jours</span>
-                    </div>
+                  <div className="flex justify-between items-center border-y border-gray-200 py-4">
+                    <div><span className="text-sm text-gray-400">N° Devis: </span><span className="font-mono text-gray-700">DEV-_______-{template.id.toUpperCase().slice(0, 3)}</span></div>
+                    <div><span className="text-sm text-gray-400">Date: </span><span className="text-gray-700">{today}</span></div>
+                    <div><span className="text-sm text-gray-400">Validité: </span><span className="text-gray-700">30 jours</span></div>
                   </div>
 
-                  {/* Services Table */}
                   <div>
-                    <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-3 print:text-foreground">
-                      Prestations
-                    </h3>
-                    <div className="border border-border rounded-lg overflow-hidden print:border-foreground print:rounded-none">
+                    <h3 className="font-semibold text-sm text-gray-400 uppercase tracking-wide mb-3">Prestations</h3>
+                    <div className="border border-gray-200 rounded-lg overflow-hidden">
                       <table className="w-full">
-                        <thead className="bg-secondary/50 print:bg-transparent">
+                        <thead className="bg-gray-50">
                           <tr>
-                            <th className="text-left p-3 font-semibold border-b border-border print:border-foreground">
-                              Description
-                            </th>
-                            <th className="text-left p-3 font-semibold border-b border-border print:border-foreground">
-                              Sélection
-                            </th>
-                            <th className="text-right p-3 font-semibold border-b border-border print:border-foreground">
-                              Prix HT
-                            </th>
+                            <th className="text-left p-3 font-semibold text-gray-700 border-b border-gray-200">Description</th>
+                            <th className="text-left p-3 font-semibold text-gray-700 border-b border-gray-200">Sélection</th>
+                            <th className="text-right p-3 font-semibold text-gray-700 border-b border-gray-200">Prix HT</th>
                           </tr>
                         </thead>
                         <tbody>
                           {template.items.map((item, idx) => (
-                            <tr key={idx} className="border-b border-border last:border-b-0 print:border-foreground">
-                              <td className="p-3">{item.label}</td>
-                              <td className="p-3">
-                                <div className="w-5 h-5 border-2 border-border rounded print:border-foreground" />
-                              </td>
-                              <td className="p-3 text-right font-medium">{item.price}</td>
+                            <tr key={idx} className="border-b border-gray-100 last:border-b-0">
+                              <td className="p-3 text-gray-700">{item.label}</td>
+                              <td className="p-3"><div className="w-5 h-5 border-2 border-gray-300 rounded" /></td>
+                              <td className="p-3 text-right font-medium text-gray-800">{item.price}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -313,61 +268,42 @@ const ContractTemplates = () => {
                     </div>
                   </div>
 
-                  {/* Totals */}
                   <div className="flex justify-end">
                     <div className="w-64 space-y-2">
-                      <div className="flex justify-between py-2 border-b border-border print:border-foreground">
-                        <span className="text-muted-foreground print:text-foreground">Total HT:</span>
-                        <span className="font-medium">_________ €</span>
-                      </div>
-                      <div className="flex justify-between py-2 border-b border-border print:border-foreground">
-                        <span className="text-muted-foreground print:text-foreground">TVA (20%):</span>
-                        <span className="font-medium">_________ €</span>
-                      </div>
-                      <div className="flex justify-between py-2 font-bold text-lg">
-                        <span>Total TTC:</span>
-                        <span>_________ €</span>
+                      {[["Total HT:", "_________ €"], ["TVA (20%):", "_________ €"]].map(([l, v]) => (
+                        <div key={l} className="flex justify-between py-2 border-b border-gray-200">
+                          <span className="text-gray-500">{l}</span><span className="font-medium text-gray-800">{v}</span>
+                        </div>
+                      ))}
+                      <div className="flex justify-between py-2 font-bold text-lg text-gray-900">
+                        <span>Total TTC:</span><span>_________ €</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Conditions */}
                   <div>
-                    <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide mb-3 print:text-foreground">
-                      Conditions
-                    </h3>
-                    <ul className="bg-secondary/30 p-4 rounded-lg space-y-1 print:bg-transparent print:border print:border-foreground print:rounded-none">
-                      {template.conditions.map((condition, idx) => (
-                        <li key={idx} className="text-sm flex items-start gap-2">
-                          <span className="text-primary print:text-foreground">•</span>
-                          <span>{condition}</span>
+                    <h3 className="font-semibold text-sm text-gray-400 uppercase tracking-wide mb-3">Conditions</h3>
+                    <ul className="bg-gray-50 p-4 rounded-lg space-y-1 print:bg-transparent print:border print:border-gray-400">
+                      {template.conditions.map((c, idx) => (
+                        <li key={idx} className="text-sm flex items-start gap-2 text-gray-700">
+                          <span className="text-cyan-600">•</span><span>{c}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
 
-                  {/* Signatures */}
-                  <div className="grid md:grid-cols-2 gap-6 pt-6 border-t border-border print:border-foreground">
-                    <div className="space-y-4">
-                      <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide print:text-foreground">
-                        Le Prestataire
-                      </h3>
-                      <p className="text-sm">Date: _____________________</p>
-                      <p className="text-sm">Signature:</p>
-                      <div className="h-20 border-b border-border print:border-foreground" />
-                    </div>
-                    <div className="space-y-4">
-                      <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide print:text-foreground">
-                        Le Client
-                      </h3>
-                      <p className="text-sm">Date: _____________________</p>
-                      <p className="text-sm">Signature (précédée de "Bon pour accord"):</p>
-                      <div className="h-20 border-b border-border print:border-foreground" />
-                    </div>
+                  <div className="grid md:grid-cols-2 gap-6 pt-6 border-t border-gray-200">
+                    {["Le Prestataire", "Le Client"].map((role) => (
+                      <div key={role} className="space-y-4">
+                        <h3 className="font-semibold text-sm text-gray-400 uppercase tracking-wide">{role}</h3>
+                        <p className="text-sm text-gray-700">Date: _____________________</p>
+                        <p className="text-sm text-gray-700">{role === "Le Client" ? 'Signature (précédée de "Bon pour accord"):' : "Signature:"}</p>
+                        <div className="h-20 border-b border-gray-300" />
+                      </div>
+                    ))}
                   </div>
 
-                  {/* Legal Mentions */}
-                  <div className="text-xs text-muted-foreground mt-6 pt-4 border-t border-border print:text-foreground print:border-foreground">
+                  <div className="text-xs text-gray-400 mt-6 pt-4 border-t border-gray-200">
                     <p>Ce devis est valable 30 jours à compter de sa date d'émission. Tout devis signé vaut engagement ferme. 
                     En cas d'annulation par le client après signature, l'acompte versé reste acquis au prestataire. 
                     Le solde est dû à la livraison sauf mention contraire. Tout retard de paiement entraînera des pénalités 
@@ -379,26 +315,7 @@ const ContractTemplates = () => {
           ))}
         </div>
       </div>
-
-      {/* Print Styles */}
-      <style>{`
-        @media print {
-          body {
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-          }
-          .print\\:hidden {
-            display: none !important;
-          }
-          .print\\:break-before-page {
-            break-before: page;
-          }
-          .print\\:break-before-page:first-child {
-            break-before: auto;
-          }
-        }
-      `}</style>
-    </div>
+    </DashboardLayout>
   );
 };
 
