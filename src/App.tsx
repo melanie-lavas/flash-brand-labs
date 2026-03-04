@@ -1,18 +1,27 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import Dashboard from "./pages/Dashboard";
-import ServiceProcedures from "./pages/ServiceProcedures";
-import ContractTemplates from "./pages/ContractTemplates";
-import ClientTracking from "./pages/ClientTracking";
-import SiteTransfer from "./pages/SiteTransfer";
+
+// Lazy load pages for performance
+const Index = lazy(() => import("./pages/Index"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const ServiceProcedures = lazy(() => import("./pages/ServiceProcedures"));
+const ContractTemplates = lazy(() => import("./pages/ContractTemplates"));
+const ClientTracking = lazy(() => import("./pages/ClientTracking"));
+const SiteTransfer = lazy(() => import("./pages/SiteTransfer"));
 
 const queryClient = new QueryClient();
+
+const Loading = () => (
+  <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="w-8 h-8 border-3 border-gray-200 border-t-gray-800 rounded-full animate-spin" />
+  </div>
+);
 
 const App = () => (
   <HelmetProvider>
@@ -21,21 +30,22 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/dashboard/procedures" element={<ServiceProcedures />} />
-            <Route path="/dashboard/contrats" element={<ContractTemplates />} />
-            <Route path="/dashboard/suivi-client" element={<ClientTracking />} />
-            <Route path="/dashboard/transfert-site" element={<SiteTransfer />} />
-            {/* Legacy routes redirect */}
-            <Route path="/procedures" element={<ServiceProcedures />} />
-            <Route path="/contrats" element={<ContractTemplates />} />
-            <Route path="/suivi-client" element={<ClientTracking />} />
-            <Route path="/transfert-site" element={<SiteTransfer />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Suspense fallback={<Loading />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard/procedures" element={<ServiceProcedures />} />
+              <Route path="/dashboard/contrats" element={<ContractTemplates />} />
+              <Route path="/dashboard/suivi-client" element={<ClientTracking />} />
+              <Route path="/dashboard/transfert-site" element={<SiteTransfer />} />
+              {/* Legacy routes */}
+              <Route path="/procedures" element={<ServiceProcedures />} />
+              <Route path="/contrats" element={<ContractTemplates />} />
+              <Route path="/suivi-client" element={<ClientTracking />} />
+              <Route path="/transfert-site" element={<SiteTransfer />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
