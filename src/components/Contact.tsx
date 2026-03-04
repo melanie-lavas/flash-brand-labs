@@ -5,13 +5,44 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { z } from "zod";
+
+const contactSchema = z.object({
+  name: z.string().trim().min(1, "Le nom est requis").max(100, "Le nom doit contenir moins de 100 caractères"),
+  email: z.string().trim().email("Adresse courriel invalide").max(255, "Le courriel doit contenir moins de 255 caractères"),
+  phone: z.string().trim().max(20, "Numéro trop long").regex(/^[0-9()+\-\s]*$/, "Numéro de téléphone invalide").optional().or(z.literal("")),
+  service: z.string().min(1, "Veuillez sélectionner un service"),
+  message: z.string().trim().min(1, "Le message est requis").max(2000, "Le message doit contenir moins de 2000 caractères"),
+});
 
 const Contact = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrors({});
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      phone: formData.get("phone") as string,
+      service: formData.get("service") as string,
+      message: formData.get("message") as string,
+    };
+
+    const result = contactSchema.safeParse(data);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) fieldErrors[err.path[0] as string] = err.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
     setIsSubmitting(true);
     await new Promise(resolve => setTimeout(resolve, 1000));
     toast({
@@ -74,21 +105,24 @@ const Contact = () => {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-            <form onSubmit={handleSubmit} className="glass-card-glow rounded-2xl p-8 space-y-6">
+            <form onSubmit={handleSubmit} className="glass-card-glow rounded-2xl p-8 space-y-6" noValidate>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="name" className="block text-xs font-mono text-primary/50 tracking-wider uppercase mb-2">Nom complet</label>
-                  <Input id="name" name="name" required placeholder="Jean Dupont" className="bg-secondary/50 border-primary/10 focus:border-primary" />
+                  <Input id="name" name="name" required maxLength={100} placeholder="Jean Dupont" className="bg-secondary/50 border-primary/10 focus:border-primary" />
+                  {errors.name && <p className="text-destructive text-xs mt-1">{errors.name}</p>}
                 </div>
                 <div>
                   <label htmlFor="email" className="block text-xs font-mono text-primary/50 tracking-wider uppercase mb-2">Courriel</label>
-                  <Input id="email" name="email" type="email" required placeholder="jean@exemple.com" className="bg-secondary/50 border-primary/10 focus:border-primary" />
+                  <Input id="email" name="email" type="email" required maxLength={255} placeholder="jean@exemple.com" className="bg-secondary/50 border-primary/10 focus:border-primary" />
+                  {errors.email && <p className="text-destructive text-xs mt-1">{errors.email}</p>}
                 </div>
               </div>
 
               <div>
                 <label htmlFor="phone" className="block text-xs font-mono text-primary/50 tracking-wider uppercase mb-2">Téléphone</label>
-                <Input id="phone" name="phone" type="tel" placeholder="(514) 555-0123" className="bg-secondary/50 border-primary/10 focus:border-primary" />
+                <Input id="phone" name="phone" type="tel" maxLength={20} placeholder="(514) 555-0123" className="bg-secondary/50 border-primary/10 focus:border-primary" />
+                {errors.phone && <p className="text-destructive text-xs mt-1">{errors.phone}</p>}
               </div>
 
               <div>
@@ -102,11 +136,13 @@ const Contact = () => {
                   <option value="marketing">Marketing digital</option>
                   <option value="package">Forfait complet</option>
                 </select>
+                {errors.service && <p className="text-destructive text-xs mt-1">{errors.service}</p>}
               </div>
 
               <div>
                 <label htmlFor="message" className="block text-xs font-mono text-primary/50 tracking-wider uppercase mb-2">Décrivez votre projet</label>
-                <Textarea id="message" name="message" required rows={4} placeholder="Parlez-nous de votre entreprise et de vos objectifs..." className="bg-secondary/50 border-primary/10 focus:border-primary resize-none" />
+                <Textarea id="message" name="message" required rows={4} maxLength={2000} placeholder="Parlez-nous de votre entreprise et de vos objectifs..." className="bg-secondary/50 border-primary/10 focus:border-primary resize-none" />
+                {errors.message && <p className="text-destructive text-xs mt-1">{errors.message}</p>}
               </div>
 
               <Button type="submit" variant="hero" size="lg" className="w-full font-mono tracking-wide" disabled={isSubmitting}>
